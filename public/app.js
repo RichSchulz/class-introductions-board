@@ -66,8 +66,13 @@ form.addEventListener('submit', async (e) => {
       throw new Error(data.error || 'Could not save your card.');
     }
 
+    // Show the new card immediately. Netlify Blobs list() is eventually
+    // consistent, so a refetch right now might not include it yet — merge the
+    // returned profile in optimistically instead.
+    const saved = await res.json();
     form.reset();
-    await loadProfiles();
+    profiles = mergeById([saved], profiles);
+    renderBoard(profiles);
   } catch (err) {
     formError.textContent = err.message;
     formError.hidden = false;
@@ -102,23 +107,40 @@ function fileToResizedDataUrl(file, max = 512) {
 // --- Board rendering ---
 const board = document.getElementById('board');
 
+// Local copy of the board so an optimistically-added card is never dropped by
+// a stale server list. Refreshed periodically to pick up classmates' cards.
+let profiles = [];
+
 async function loadProfiles() {
   try {
     const res = await fetch(API);
-    const profiles = await res.json();
+    const server = await res.json();
+    profiles = mergeById(server, profiles);
     renderBoard(profiles);
   } catch {
-    board.innerHTML = '<p class="empty">Could not load profiles.</p>';
+    if (!profiles.length) {
+      board.innerHTML = '<p class="empty">Could not load profiles.</p>';
+    }
   }
 }
 
-function renderBoard(profiles) {
-  if (!profiles.length) {
+// Combine two lists by id (local entries win on ties), newest first.
+function mergeById(a, b) {
+  const byId = new Map();
+  for (const p of [...a, ...b]) if (!byId.has(p.id)) byId.set(p.id, p);
+  return [...byId.values()].sort((x, y) => y.createdAt - x.createdAt);
+}
+
+function renderBoard(list) {
+  if (!list.length) {
     board.innerHTML = '<p class="empty">No cards yet — be the first!</p>';
     return;
   }
-  board.innerHTML = profiles.map(cardHtml).join('');
+  board.innerHTML = list.map(cardHtml).join('');
 }
+
+// Pick up other students' new cards without a manual refresh.
+setInterval(loadProfiles, 15000);
 
 function cardHtml(p) {
   const avatar = p.photoUrl
