@@ -1,0 +1,7 @@
+[build]
+  publish = "public"
+  functions = "netlify/functions"
+
+# Local dev with `netlify dev`
+[dev]
+  publish = "public"

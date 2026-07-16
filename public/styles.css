@@ -1,0 +1,170 @@
+:root {
+  --bg: #f4f5f7;
+  --card: #ffffff;
+  --ink: #1c1f26;
+  --muted: #6b7280;
+  --accent: #2563eb;
+  --border: #e5e7eb;
+  --radius: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+h1 {
+  margin: 0 0 0.25rem;
+  font-size: 1.5rem;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+
+button {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.7rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 0.6rem 0.7rem;
+  font-size: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.error {
+  color: #b91c1c;
+  font-size: 0.9rem;
+  margin: 0.25rem 0 0;
+}
+
+/* --- Passcode gate --- */
+.gate {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.gate-card {
+  width: min(360px, 100%);
+  display: grid;
+  gap: 0.75rem;
+  text-align: center;
+}
+
+.gate-card p {
+  margin: 0;
+  color: var(--muted);
+}
+
+/* --- Main layout --- */
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 3rem;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.header p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.form {
+  display: grid;
+  gap: 0.9rem;
+  margin-bottom: 1.75rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.field label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* --- Board grid --- */
+.board {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.profile {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  text-align: center;
+}
+
+.avatar {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  margin: 0 auto 0.6rem;
+  object-fit: cover;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.profile h3 {
+  margin: 0.1rem 0;
+  font-size: 1.05rem;
+}
+
+.profile p {
+  margin: 0.1rem 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.profile .major {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--muted);
+  padding: 2rem 0;
+}

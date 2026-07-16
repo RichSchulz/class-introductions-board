@@ -1,0 +1,9 @@
+{
+  "name": "class-introductions-board",
+  "version": "1.0.0",
+  "description": "A small Netlify class profile board (Functions + Blobs).",
+  "type": "module",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}

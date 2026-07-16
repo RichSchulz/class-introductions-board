@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Class Introductions Board</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Passcode gate (checked in the browser only) -->
+    <section id="gate" class="gate">
+      <form id="gate-form" class="card gate-card">
+        <h1>Class Introductions</h1>
+        <p>Enter the class passcode to continue.</p>
+        <input
+          id="passcode"
+          type="password"
+          placeholder="Class passcode"
+          autocomplete="off"
+          required
+        />
+        <button type="submit">Enter</button>
+        <p id="gate-error" class="error" hidden>Incorrect passcode. Try again.</p>
+      </form>
+    </section>
+
+    <!-- Main app (revealed after passcode) -->
+    <main id="app" hidden>
+      <header class="header">
+        <h1>Class Introductions</h1>
+        <p>Add your card, then meet everyone else.</p>
+      </header>
+
+      <form id="profile-form" class="card form">
+        <div class="field">
+          <label for="firstName">First name</label>
+          <input id="firstName" name="firstName" maxlength="60" required />
+        </div>
+        <div class="field">
+          <label for="major">Major</label>
+          <input id="major" name="major" maxlength="100" required />
+        </div>
+        <div class="field">
+          <label for="year">Year</label>
+          <select id="year" name="year" required>
+            <option value="" disabled selected>Select…</option>
+            <option>First year</option>
+            <option>Second year</option>
+            <option>Third year</option>
+            <option>Fourth year</option>
+            <option>Graduate</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="region">Hometown or region</label>
+          <input
+            id="region"
+            name="region"
+            maxlength="100"
+            placeholder="e.g. Pacific Northwest"
+            required
+          />
+        </div>
+        <div class="field">
+          <label for="photo">Photo (optional)</label>
+          <input id="photo" name="photo" type="file" accept="image/*" />
+        </div>
+        <button type="submit" id="submit-btn">Add my card</button>
+        <p id="form-error" class="error" hidden></p>
+      </form>
+
+      <section id="board" class="board" aria-live="polite"></section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
