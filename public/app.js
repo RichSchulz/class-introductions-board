@@ -7,28 +7,48 @@ const API = '/api/profiles';
 // --- Passcode gate ---
 const gate = document.getElementById('gate');
 const app = document.getElementById('app');
-const gateForm = document.getElementById('gate-form');
+const passcodeInput = document.getElementById('passcode');
+const gateSubmit = document.getElementById('gate-submit');
 const gateError = document.getElementById('gate-error');
 
 function unlock() {
   gate.hidden = true;
   app.hidden = false;
+  // Remember for the session — but never let a storage failure (e.g. Safari
+  // Private Mode throwing on setItem) block entry.
+  try {
+    sessionStorage.setItem('unlocked', 'yes');
+  } catch {}
   loadProfiles();
 }
 
 // Stay unlocked for the session so a refresh doesn't re-prompt.
-if (sessionStorage.getItem('unlocked') === 'yes') {
-  unlock();
+try {
+  if (sessionStorage.getItem('unlocked') === 'yes') unlock();
+} catch {}
+
+// Normalize so a mobile keyboard's auto-capitalization or a stray space
+// can't cause a valid passcode to be rejected.
+function norm(s) {
+  return String(s).trim().toLowerCase();
 }
 
-gateForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const value = document.getElementById('passcode').value.trim();
-  if (value === CLASS_PASSCODE) {
-    sessionStorage.setItem('unlocked', 'yes');
+function attemptUnlock() {
+  const raw = passcodeInput.value;
+  const value = norm(raw);
+  if (value === norm(CLASS_PASSCODE)) {
     unlock();
   } else {
+    gateError.textContent = 'Incorrect passcode. Try again.';
     gateError.hidden = false;
+  }
+}
+
+gateSubmit.addEventListener('click', attemptUnlock);
+passcodeInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    attemptUnlock();
   }
 });
 

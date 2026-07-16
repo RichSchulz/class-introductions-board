@@ -5,3 +5,14 @@
 # Local dev with `netlify dev`
 [dev]
   publish = "public"
+
+# Always revalidate the HTML and app script so updates aren't served stale.
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/app.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
