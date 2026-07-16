@@ -12,6 +12,13 @@
   box-sizing: border-box;
 }
 
+/* .gate sets its own `display: grid`, which would otherwise override the
+   `hidden` attribute (author styles beat the UA stylesheet regardless of
+   specificity) and leave the passcode screen covering the page forever. */
+[hidden] {
+  display: none !important;
+}
+
 body {
   margin: 0;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
