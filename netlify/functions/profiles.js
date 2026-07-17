@@ -4,6 +4,12 @@ import { getStore } from '@netlify/blobs';
 const PROFILES = 'class-profiles';
 const PHOTOS = 'class-photos';
 
+// All profiles live in one JSON array under this single key. A single-key
+// get/set is immediately consistent; store.list() is only *eventually*
+// consistent (new blobs can take up to ~a minute to appear), which is why
+// the board used to lag after a fresh submit.
+const INDEX_KEY = 'index';
+
 // Only real image types are allowed — this prevents a user from smuggling in
 // e.g. text/html and getting it served back as an executable page (stored XSS).
 const ALLOWED_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
@@ -38,11 +44,7 @@ export default async (req) => {
 
   // --- List profiles, newest first: GET /api/profiles ---
   if (req.method === 'GET') {
-    const { blobs } = await profiles.list();
-    const items = (
-      await Promise.all(blobs.map((b) => profiles.get(b.key, { type: 'json' })))
-    ).filter(Boolean);
-    items.sort((a, b) => b.createdAt - a.createdAt);
+    const items = (await profiles.get(INDEX_KEY, { type: 'json' })) || [];
     return Response.json(items);
   }
 
@@ -95,7 +97,11 @@ export default async (req) => {
       createdAt: Date.now(),
     };
 
-    await profiles.setJSON(id, profile);
+    // Read-modify-write the shared index. Newest first.
+    const items = (await profiles.get(INDEX_KEY, { type: 'json' })) || [];
+    items.unshift(profile);
+    await profiles.setJSON(INDEX_KEY, items);
+
     return Response.json(profile, { status: 201 });
   }
 
